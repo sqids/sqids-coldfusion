@@ -1,0 +1,11 @@
+{
+    "devDependencies":{
+        "testbox":"^5.3.1+6"
+    },
+    "installPaths":{
+        "testbox":"testbox/"
+    },
+    "testbox":{
+        "runner":"http://localhost:60850/tests/runner.cfm"
+    }
+}

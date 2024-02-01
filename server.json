@@ -1,0 +1,15 @@
+{
+    "app":{
+        "cfengine":"lucee"
+    },
+    "jvm":{
+        "javaVersion":"openjdk11_jdk-11.0.22+7"
+    },
+    "name":"sqids-coldfusion",
+    "openBrowser":"false",
+    "web":{
+        "HTTP":{
+            "port":"60850"
+        }
+    }
+}
