@@ -29,9 +29,35 @@ component namespace="Sqids"
 			throw(type="custom", message = "The minimum length must be between 0 and #variables.MaxMinLength#.");
 		}
 
+		// clean up blocklist:
+		// 1. all blocklist words should be lowercase
+		// 2. no words less than 3 chars
+		// 3. if some words contain chars that are not in the alphabet, remove those
+		var filteredBlocklist = [];
+		var alphabetChars = listToArray(lCase(alphabet), "");
+		for (var word in blocklist) {
+			if (word.len() >= 3) {
+				var wordLowercased = lCase(word);
+				var wordChars = listToArray(wordLowercased, "");
+				var intersection = wordChars.filter(
+					function (required string wordChar)
+					{
+						var _wordChar = wordChar;
+						return alphabetChars.some(
+							function (required string alphabetChar)
+							{
+								return arguments.alphabetChar == _wordChar;
+							});
+					});
+				if (intersection.len() == wordChars.len()) {
+					filteredBlocklist.append(wordLowercased);
+				}
+			}
+		}
+
         variables.alphabet = shuffle(listToArray(alphabet, ""));
         variables.minLength = minLength;
-        //variables.blocklist = filteredBlocklist;
+        variables.blocklist = filteredBlocklist;
 
         return this;
     }
@@ -53,9 +79,11 @@ component namespace="Sqids"
 		}
 
 		// don"t allow out-of-range numbers [might be lang-specific]
-		var inRangeNumbers = numbers.filter(function (n) {
-            return n >= 0 && n <= variables.MaxNumber;
-        });
+		var inRangeNumbers = numbers.filter(
+			function (required numeric n)
+			{
+				return n >= 0 && n <= variables.MaxNumber;
+			});
 
 		if (inRangeNumbers.len() != numbers.len()) {
 			throw(type="custom", message="Encoding supports numbers between 0 and #variables.MaxNumber#");
@@ -119,20 +147,105 @@ component namespace="Sqids"
 			}
 		}
 
-		return arrayToList(ret, "");
+		var id = arrayToList(ret, "");
+
+		// TODO:
+		// handle `minLength` requirement, if the ID is too short
+		/*if (this.minLength > id.length) {
+			// append a separator
+			id += alphabet.slice(0, 1);
+
+			// keep appending `separator` + however much alphabet is needed
+			// for decoding: two separators next to each other is what tells us the rest are junk characters
+			while (this.minLength - id.length > 0) {
+				alphabet = this.shuffle(alphabet);
+				id += alphabet.slice(0, Math.min(this.minLength - id.length, alphabet.length));
+			}
+		}*/
+
+		// TODO:
+		// if ID has a blocked word anywhere, restart with a +1 increment
+		/*if (this.isBlockedId(id)) {
+			id = this.encodeNumbers(numbers, increment + 1);
+		}*/
+
+		return id;
 	}
 
-	public array function decode(required string id) {
+	/**
+	 * Decodes an ID back into an array of unsigned integers
+	 *
+	 * These are the cases where the return value might be an empty array:
+	 * - Empty ID / empty string
+	 * - Non-alphabet character is found within ID
+	 *
+	 * @param {string} id Encoded ID
+	 * @returns {array.<number>} Array of unsigned integers
+	 */
+	public array function decode(required string idArg) {
 		var ret = [];
+		var id = arguments.idArg;
 
 		// if an empty string, return an empty array
 		if (id == "") {
 			return ret;
 		}
 
+		// if a character is not in the alphabet, return an empty array
+		var alphabetChars = variables.alphabet;
+		for (var idChar in listToArray(id, "")) {
+			if (!alphabetChars.some(
+					function (required string alphabetChar)
+					{
+						return arguments.alphabetChar == idChar;
+					})) {
+				return ret;
+			}
+		}
+
+		// first character is always the `prefix`
+		var prefix = id[1];
+
+		// `offset` is the semi-random position that was generated during encoding
+		var offset = variables.alphabet.find(prefix);
+
+		// re-arrange alphabet back into it's original form
+		var alphabet = variables.alphabet.mid(offset);
+		alphabet.append(variables.alphabet.mid(1, offset - 1), true);
+
+		// reverse alphabet
+		alphabet = alphabet.reverse();
+
+		// now it's safe to remove the prefix character from ID, it's not needed anymore
+		id = id.right(id.len() - 1);
+
+		writeDump(var=id, format="html", output="c:\temp\#getTickCount()#.html");
+		while (id.len()) {
+			var separator = alphabet[1];
+			// we need the first part to the left of the separator to decode the number
+			var chunks = listToArray(id, separator, true);
+
+			// if chunk is empty, we are done (the rest are junk characters)
+			if (chunks[1] == "") {
+				return ret;
+			}
+
+			// decode the number without using the `separator` character
+			var alphabetWithoutSeparator = alphabet.mid(2);
+			ret.append(toNumber(chunks[1], alphabetWithoutSeparator), true);
+
+			// if this ID has multiple numbers, shuffle the alphabet because that's what encoding function did
+			if (chunks.len() > 1) {
+				alphabet = this.shuffle(alphabet);
+			}
+
+			// `id` is now going to be everything to the right of the `separator`
+			id = arrayToList(chunks.mid(2), separator);
+
+		}
+
 		return ret;
 	}
-
 
 	// consistent shuffle (always produces the same result given the input)
 	private array function shuffle(array alphabet) {
@@ -164,5 +277,17 @@ component namespace="Sqids"
 		} while (result > 0);
 
 		return id;
+	}
+
+	private numeric function toNumber(required string id, required array alphabetArg)
+	{
+		var alphabet = arguments.alphabetArg;
+		var idChars = listToArray(arguments.id, "");
+
+		return idChars.reduce(
+			function (required numeric result, required string item)
+			{
+				return result * alphabet.len() + alphabet.find(item) - 1;
+			}, 0);
 	}
 }

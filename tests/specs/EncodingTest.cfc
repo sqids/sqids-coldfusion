@@ -6,6 +6,7 @@ component extends="testbox.system.BaseSpec" {
 		// setup the entire test bundle here
 		var sqidsOptions = new Sqids.SqidsOptions();
 		variables.SqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
+		variables.MaxNumber = createObject("java", "java.lang.Long").MAX_VALUE;
 	}
 
 	function afterAll(){
@@ -76,13 +77,13 @@ component extends="testbox.system.BaseSpec" {
 				expect(variables.SqidsEncoder.decode(id)).toBe(numbers);
 			} );
 
-			xit( "different inputs", function() {
-				var numbers = [0, 0, 0, 1, 2, 3, 100, 1000, 100000, 1000000, createObject("java", "java.lang.Long").MAX_VALUE];
+			it( "different inputs", function() {
+				var numbers = [0, 0, 0, 1, 2, 3, 100, 1000, 100000, 1000000, variables.MaxNumber];
 
 				expect(variables.SqidsEncoder.decode(variables.SqidsEncoder.encode(numbers))).toBe(numbers);
 			} );
 
-			xit( "incremental numbers", function() {
+			it( "incremental numbers", function() {
 				var ids = [
 					"bM": [0],
 					"Uk": [1],
@@ -102,7 +103,7 @@ component extends="testbox.system.BaseSpec" {
 				} );
 			} );
 
-			xit( "incremental numbers, same index 0", function() {
+			it( "incremental numbers, same index 0", function() {
 				var ids = [
 					"SvIz": [0, 0],
 					"n3qa": [0, 1],
@@ -122,7 +123,7 @@ component extends="testbox.system.BaseSpec" {
 				} );
 			} );
 
-			xit( "incremental numbers, same index 1", function() {
+			it( "incremental numbers, same index 1", function() {
 				var ids = [
 					"SvIz": [0, 0],
 					"nWqP": [1, 0],
@@ -142,7 +143,7 @@ component extends="testbox.system.BaseSpec" {
 				} );
 			} );
 
-			xit( "multi input", function() {
+			it( "multi input", function() {
 				var numbers = [
 					0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
 					26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
@@ -155,25 +156,24 @@ component extends="testbox.system.BaseSpec" {
 				expect(output).toBe(numbers);
 			} );
 
-			xit( "encoding no numbers", function() {
+			it( "encoding no numbers", function() {
 				expect(variables.SqidsEncoder.encode([])).toBe("");
 			} );
 
-			xit( "decoding empty string", function() {
+			it( "decoding empty string", function() {
 				expect(variables.SqidsEncoder.decode("")).toBe([]);
 			} );
 
-			xit( "decoding an ID with an invalid character", function() {
+			it( "decoding an ID with an invalid character", function() {
 				expect(variables.SqidsEncoder.decode("*")).toBe([]);
 			} );
 
-			xit( "encode out-of-range numbers", function() {
+			it( "encode out-of-range numbers", function() {
 				var sqidsOptions = new Sqids.SqidsOptions();
 				var sqids = new Sqids.SqidsEncoder(sqidsOptions);
-				var maxNumber = createObject("java", "java.lang.Long").MAX_VALUE;
 
 				expect(function() { variables.SqidsEncoder.encode([-1]); }).toThrow();
-				expect(function() { variables.SqidsEncoder.encode(maxNumber + 1); }).toThrow();
+				expect(function() { variables.SqidsEncoder.encode(variables.MaxNumber + 1); }).toThrow();
 			} );
 
 		} );
