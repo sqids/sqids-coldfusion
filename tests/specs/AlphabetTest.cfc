@@ -104,7 +104,6 @@ component extends="testbox.system.BaseSpec" {
 
 				expect(function() { var sqids = new Sqids.SqidsEncoder(sqidsOptions); }).toThrow();
 			} );
-
 		} );
 	}
 }

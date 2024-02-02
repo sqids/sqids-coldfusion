@@ -139,13 +139,10 @@ component extends="testbox.system.BaseSpec" {
                 var sqidsOptions = new Sqids.SqidsOptions(alphabet="abc", minLength=3, blocklist=["cab", "abc", "bca"]);
                 var sqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
 
-                writeDump(var=sqidsOptions, format="html", output="c:\temp\#gettickcount()#-sqidsOptions.html");
                 expect(sqidsOptions.getAlphabet().len()).toBe(sqidsOptions.getMinLength());
                 expect(sqidsOptions.getBlocklist().len()).toBe(sqidsOptions.getMinLength());
-
                 expect(function() { var id = sqidsEncoder.encode([0]); }).toThrow();
             } );
-
 		} );
 	}
 }

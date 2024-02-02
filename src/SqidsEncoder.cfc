@@ -42,7 +42,7 @@ component namespace="Sqids"
 				var intersection = wordChars.filter(
 					function (required string wordChar)
 					{
-						var _wordChar = wordChar;
+						var _wordChar = arguments.wordChar;
 						return alphabetChars.some(
 							function (required string alphabetChar)
 							{
@@ -72,7 +72,9 @@ component namespace="Sqids"
 	 * @param {array.<number>} numbers Non-negative integers to encode into an ID
 	 * @returns {string} Generated ID
 	 */
-	public string function encode(required array numbers) {
+	public string function encode(required array numbersArg) {
+		var numbers = arguments.numbersArg;
+
 		// if no numbers passed, return an empty string
 		if (arrayLen(numbers) == 0) {
 			return "";
@@ -82,7 +84,7 @@ component namespace="Sqids"
 		var inRangeNumbers = numbers.filter(
 			function (required numeric n)
 			{
-				return n >= 0 && n <= variables.MaxNumber;
+				return arguments.n >= 0 && arguments.n <= variables.MaxNumber;
 			});
 
 		if (inRangeNumbers.len() != numbers.len()) {
@@ -99,7 +101,9 @@ component namespace="Sqids"
 	 * @param {number} increment An internal number used to modify the `offset` variable in order to re-generate the ID
 	 * @returns {string} Generated ID
 	 */
-	private string function encodeNumbers(required array numbers, numeric increment = 0) {
+	private string function encodeNumbers(required array numbersArg, numeric increment = 0) {
+		var numbers = arguments.numbersArg;
+
 		// if increment is greater than alphabet length, we"ve reached max attempts
 		if (increment > variables.alphabet.len()) {
 			throw(type="custom", message="Reached max attempts to re-generate the ID");
@@ -109,12 +113,12 @@ component namespace="Sqids"
 		var offset = numbers.reduce(
 			function (required numeric result, required numeric item, required numeric index)
 			{
-				return asc(variables.alphabet[item mod Len(variables.alphabet) + 1]) + index - 1 + result;
+				return asc(variables.alphabet[arguments.item mod Len(variables.alphabet) + 1]) + arguments.index - 1 + arguments.result;
 			}, numbers.len()
 		) mod variables.alphabet.len() + 1;
 
 		// if there is a non-zero `increment`, it's an internal attempt to re-generated the ID
-		offset = (offset + increment) mod variables.alphabet.len();
+		offset = (offset + arguments.increment) mod variables.alphabet.len();
 
 		// re-arrange alphabet so that second-half goes in front of the first-half
 		var alphabet = variables.alphabet.mid(offset);
@@ -181,8 +185,8 @@ component namespace="Sqids"
 	 * @returns {array.<number>} Array of unsigned integers
 	 */
 	public array function decode(required string idArg) {
-		var ret = [];
 		var id = arguments.idArg;
+		var ret = [];
 
 		// if an empty string, return an empty array
 		if (id == "") {
@@ -265,8 +269,7 @@ component namespace="Sqids"
 	private array function toId(required numeric num, required array alphabet) {
 		var id = [];
 		var chars = arguments.alphabet;
-
-		var result = num;
+		var result = arguments.num;
 
 		do {
 			id.prepend(chars[result mod chars.len() + 1]);
@@ -284,12 +287,12 @@ component namespace="Sqids"
 		return idChars.reduce(
 			function (required numeric result, required string item)
 			{
-				return result * alphabet.len() + alphabet.find(item) - 1;
+				return arguments.result * alphabet.len() + alphabet.find(arguments.item) - 1;
 			}, 0);
 	}
 
-	private boolean function isBlockedId(required string id) {
-		id = lCase(id);
+	private boolean function isBlockedId(required string idArg) {
+		var id = lCase(arguments.idArg);
 
 		for (var word in variables.blocklist) {
 			// no point in checking words that are longer than the ID

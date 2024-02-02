@@ -1,0 +1,12 @@
+{
+    "app":{
+        "cfengine":"lucee@6"
+    },
+    "name":"sqids-coldfusion-lucee6",
+    "openBrowser":"false",
+    "web":{
+        "HTTP":{
+            "port":"60851"
+        }
+    }
+}

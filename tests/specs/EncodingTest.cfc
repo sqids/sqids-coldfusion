@@ -97,9 +97,9 @@ component extends="testbox.system.BaseSpec" {
 					"nJ": [9]
 				];
 
-				ids.each(function(id, numbers) {
-					expect(variables.SqidsEncoder.encode(numbers)).toBe(id);
-					expect(variables.SqidsEncoder.decode(id)).toBe(numbers);
+				ids.each(function(required string id, required array numbers) {
+					expect(variables.SqidsEncoder.encode(arguments.numbers)).toBe(arguments.id);
+					expect(variables.SqidsEncoder.decode(arguments.id)).toBe(arguments.numbers);
 				} );
 			} );
 
@@ -117,9 +117,9 @@ component extends="testbox.system.BaseSpec" {
 					"moxr": [0, 9]
 				];
 
-				ids.each(function(id, numbers) {
-					expect(variables.SqidsEncoder.encode(numbers)).toBe(id);
-					expect(variables.SqidsEncoder.decode(id)).toBe(numbers);
+				ids.each(function(required string id, required array numbers) {
+					expect(variables.SqidsEncoder.encode(arguments.numbers)).toBe(arguments.id);
+					expect(variables.SqidsEncoder.decode(arguments.id)).toBe(arguments.numbers);
 				} );
 			} );
 
@@ -137,9 +137,9 @@ component extends="testbox.system.BaseSpec" {
 					"m2xn": [9, 0]
 				];
 
-				ids.each(function(id, numbers) {
-					expect(variables.SqidsEncoder.encode(numbers)).toBe(id);
-					expect(variables.SqidsEncoder.decode(id)).toBe(numbers);
+				ids.each(function(required string id, required array numbers) {
+					expect(variables.SqidsEncoder.encode(arguments.numbers)).toBe(arguments.id);
+					expect(variables.SqidsEncoder.decode(arguments.id)).toBe(arguments.numbers);
 				} );
 			} );
 
@@ -172,7 +172,6 @@ component extends="testbox.system.BaseSpec" {
 				expect(function() { variables.SqidsEncoder.encode([-1]); }).toThrow();
 				expect(function() { variables.SqidsEncoder.encode(variables.MaxNumber + 1); }).toThrow();
 			} );
-
 		} );
 	}
 }

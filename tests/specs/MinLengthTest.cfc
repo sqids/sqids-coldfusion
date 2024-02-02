@@ -123,8 +123,8 @@ component extends="testbox.system.BaseSpec" {
                 ];
 
                 ids.each(function (required string id, required array numbers) {
-                    expect(sqidsEncoder.encode(numbers)).toBe(id);
-                    expect(sqidsEncoder.decode(id)).toBe(numbers);
+                    expect(sqidsEncoder.encode(arguments.numbers)).toBe(arguments.id);
+                    expect(sqidsEncoder.decode(arguments.id)).toBe(arguments.numbers);
                 });
 			} );
 
@@ -146,7 +146,6 @@ component extends="testbox.system.BaseSpec" {
                     }
                 }
 			} );
-
 		} );
 	}
 }
