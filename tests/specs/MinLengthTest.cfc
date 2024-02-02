@@ -132,6 +132,7 @@ component extends="testbox.system.BaseSpec" {
 
 			it( "min lengths", function() {
                 for (var minLength in [0, 1, 5, 10, variables.defaultAlphabetLength]) {
+                    var sqidsEncoder = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(minLength=minLength));
                     for (var numbers in [
                         [0],
                         [0, 0, 0, 0, 0],
@@ -141,7 +142,6 @@ component extends="testbox.system.BaseSpec" {
                         [1000000],
                         [variables.maxNumber]
                     ]) {
-                        var sqidsEncoder = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(minLength=minLength));
                         var id = sqidsEncoder.encode(numbers);
                         expect(id.len()).toBeGTE(minLength);
                         expect(sqidsEncoder.decode(id)).toBe(numbers);

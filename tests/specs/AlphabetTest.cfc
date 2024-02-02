@@ -2,17 +2,17 @@ component extends="testbox.system.BaseSpec" {
 
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
-	function beforeAll(){
+	function beforeAll() {
 		// setup the entire test bundle here
 	}
 
-	function afterAll(){
+	function afterAll() {
 		// do cleanup here
 	}
 
 	/*********************************** BDD SUITES ***********************************/
 
-	function run(){
+	function run() {
 		/**
 		 * describe() starts a suite group of spec tests. It is the main BDD construct.
 		 * You can also use the aliases: story(), feature(), scenario(), given(), when()

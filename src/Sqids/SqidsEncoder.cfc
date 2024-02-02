@@ -4,6 +4,10 @@ component namespace="Sqids"
         variables.MinAlphabetLength = 3;
         variables.MaxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
 
+		if (isNull(arguments.options)) {
+			arguments.options = new SqidsOptions();
+		}
+
         // Initialize properties based on provided options or use defaults
         var alphabet = arguments.options.getAlphabet();
         var minLength = arguments.options.getMinLength();

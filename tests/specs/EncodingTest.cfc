@@ -2,20 +2,19 @@ component extends="testbox.system.BaseSpec" {
 
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
-	function beforeAll(){
+	function beforeAll() {
 		// setup the entire test bundle here
-		var sqidsOptions = new Sqids.SqidsOptions();
-		variables.SqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
+		variables.SqidsEncoder = new Sqids.SqidsEncoder();
 		variables.MaxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
 	}
 
-	function afterAll(){
+	function afterAll() {
 		// do cleanup here
 	}
 
 	/*********************************** BDD SUITES ***********************************/
 
-	function run(){
+	function run() {
 		/**
 		 * describe() starts a suite group of spec tests. It is the main BDD construct.
 		 * You can also use the aliases: story(), feature(), scenario(), given(), when()
@@ -169,8 +168,12 @@ component extends="testbox.system.BaseSpec" {
 			} );
 
 			it( "encode out-of-range numbers", function() {
-				expect(function() { variables.SqidsEncoder.encode([-1]); }).toThrow();
-				expect(function() { variables.SqidsEncoder.encode(variables.MaxNumber + 1); }).toThrow();
+				expect(function() {
+					variables.SqidsEncoder.encode([-1]);
+				}).toThrow(type = "custom", regex = "Encoding supports numbers between 0 and #variables.MaxNumber#");
+				expect(function() {
+					variables.SqidsEncoder.encode([variables.MaxNumber + 1]);
+				}).toThrow(type = "custom", regex = "Encoding supports numbers between 0 and #variables.MaxNumber#");
 			} );
 		} );
 	}

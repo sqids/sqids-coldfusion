@@ -2,17 +2,17 @@ component extends="testbox.system.BaseSpec" {
 
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
-	function beforeAll(){
+	function beforeAll() {
 		// setup the entire test bundle here
 	}
 
-	function afterAll(){
+	function afterAll() {
 		// do cleanup here
 	}
 
 	/*********************************** BDD SUITES ***********************************/
 
-	function run(){
+	function run() {
 		/**
 		 * describe() starts a suite group of spec tests. It is the main BDD construct.
 		 * You can also use the aliases: story(), feature(), scenario(), given(), when()
@@ -141,7 +141,9 @@ component extends="testbox.system.BaseSpec" {
 
                 expect(sqidsOptions.getAlphabet().len()).toBe(sqidsOptions.getMinLength());
                 expect(sqidsOptions.getBlocklist().len()).toBe(sqidsOptions.getMinLength());
-                expect(function() { var id = sqidsEncoder.encode([0]); }).toThrow();
+                expect(function() {
+                    var id = sqidsEncoder.encode([0]);
+                }).toThrow(type = "custom", regex = "Reached max attempts to re-generate the ID");
             } );
 		} );
 	}
