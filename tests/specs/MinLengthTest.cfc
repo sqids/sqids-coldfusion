@@ -6,7 +6,7 @@ component extends="testbox.system.BaseSpec" {
 		// setup the entire test bundle here
         var sqidsOptions = new Sqids.SqidsOptions();
         variables.defaultAlphabetLength = sqidsOptions.getAlphabet().len();
-        variables.MaxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
+        variables.maxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
     }
 
 	function afterAll(){
@@ -94,8 +94,8 @@ component extends="testbox.system.BaseSpec" {
                         "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf1"
                 ];
 
-                map.each(function (required numeric minlength, required string id) {
-                    var sqidsOptions = new Sqids.SqidsOptions(minLength = arguments.minlength);
+                map.each(function (required numeric minLength, required string id) {
+                    var sqidsOptions = new Sqids.SqidsOptions(minLength = arguments.minLength);
                     var sqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
 
                     expect(sqidsEncoder.encode(numbers)).toBe(arguments.id);
@@ -129,7 +129,7 @@ component extends="testbox.system.BaseSpec" {
 			} );
 
 			it( "min lengths", function() {
-                for (var minlength in [0, 1, 5, 10, variables.defaultAlphabetLength]) {
+                for (var minLength in [0, 1, 5, 10, variables.defaultAlphabetLength]) {
                     for (var numbers in [
                         [0],
                         [0, 0, 0, 0, 0],
@@ -137,9 +137,9 @@ component extends="testbox.system.BaseSpec" {
                         [100, 200, 300],
                         [1000, 2000, 3000],
                         [1000000],
-                        [variables.MaxNumber]
+                        [variables.maxNumber]
                     ]) {
-                        var sqidsEncoder = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(minlength=minlength));
+                        var sqidsEncoder = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(minLength=minLength));
                         var id = sqidsEncoder.encode(numbers);
                         expect(id.len()).toBeGTE(minLength);
                         expect(sqidsEncoder.decode(id)).toBe(numbers);

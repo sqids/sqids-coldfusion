@@ -3,7 +3,7 @@ component namespace="Sqids"
     public SqidsEncoder function init(SqidsOptions options) {
         variables.MaxMinLength = 255;
         variables.MinAlphabetLength = 3;
-        variables.MaxNumber = createObject("java", "java.lang.Long").MAX_VALUE;
+        variables.MaxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
 
         // Initialize properties based on provided options or use defaults
         var alphabet = arguments.options.getAlphabet();
@@ -147,27 +147,25 @@ component namespace="Sqids"
 			}
 		}
 
-		var id = arrayToList(ret, "");
-
-		// TODO:
 		// handle `minLength` requirement, if the ID is too short
-		/*if (this.minLength > id.length) {
+		if (variables.minLength > ret.len()) {
 			// append a separator
-			id += alphabet.slice(0, 1);
+			ret.append(alphabet.mid(1, 1), true);
 
 			// keep appending `separator` + however much alphabet is needed
 			// for decoding: two separators next to each other is what tells us the rest are junk characters
-			while (this.minLength - id.length > 0) {
-				alphabet = this.shuffle(alphabet);
-				id += alphabet.slice(0, Math.min(this.minLength - id.length, alphabet.length));
+			while (variables.minLength - ret.len() > 0) {
+				alphabet = shuffle(alphabet);
+				ret.append(alphabet.mid(1, min(variables.minLength - ret.len(), alphabet.len())), true);
 			}
-		}*/
+		}
 
-		// TODO:
+		var id = arrayToList(ret, "");
+
 		// if ID has a blocked word anywhere, restart with a +1 increment
-		/*if (this.isBlockedId(id)) {
-			id = this.encodeNumbers(numbers, increment + 1);
-		}*/
+		if (isBlockedId(id)) {
+			id = encodeNumbers(numbers, increment + 1);
+		}
 
 		return id;
 	}
@@ -219,7 +217,6 @@ component namespace="Sqids"
 		// now it's safe to remove the prefix character from ID, it's not needed anymore
 		id = id.right(id.len() - 1);
 
-		writeDump(var=id, format="html", output="c:\temp\#getTickCount()#.html");
 		while (id.len()) {
 			var separator = alphabet[1];
 			// we need the first part to the left of the separator to decode the number
@@ -289,5 +286,31 @@ component namespace="Sqids"
 			{
 				return result * alphabet.len() + alphabet.find(item) - 1;
 			}, 0);
+	}
+
+	private boolean function isBlockedId(required string id) {
+		id = lCase(id);
+
+		for (var word in variables.blocklist) {
+			// no point in checking words that are longer than the ID
+			if (word.len() <= id.len()) {
+				if (id.len() <= 3 || word.len() <= 3) {
+					// short words have to match completely; otherwise, too many matches
+					if (id == word) {
+						return true;
+					}
+				} else if (ReFind("\d", word) > 0) { // test for a number in the word
+					// words with leet speak replacements are visible mostly on the ends of the ID
+					if (Left(id, word.len()) == word || Right(id, word.len()) == word) {
+						return true;
+					}
+				} else if (findNoCase(word, id) > 0) {
+					// otherwise, check for blocked word anywhere in the string
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

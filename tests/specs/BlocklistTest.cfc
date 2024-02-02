@@ -67,7 +67,7 @@ component extends="testbox.system.BaseSpec" {
 			} );
 
 			it( "if an empty blocklist param passed, don't use any blocklist", function() {
-                var sqidsOptions = new Sqids.SqidsOptions();
+                var sqidsOptions = new Sqids.SqidsOptions(blocklist=[]);
                 var sqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
 
                 expect(sqidsEncoder.decode('aho1e')).toBe([4572721]);
