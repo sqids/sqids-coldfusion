@@ -1,0 +1,12 @@
+{
+    "app":{
+        "cfengine":"adobe@2023"
+    },
+    "name":"sqids-coldfusion-adobe20123",
+    "openBrowser":"false",
+    "web":{
+        "HTTP":{
+            "port":"60854"
+        }
+    }
+}
