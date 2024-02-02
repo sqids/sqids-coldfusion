@@ -1,9 +1,6 @@
-# [Sqids JavaScript](https://sqids.org/javascript)
+# [Sqids Coldfusion](https://sqids.org/coldfusion)
 
-[![npm version](https://img.shields.io/npm/v/sqids.svg)](https://www.npmjs.com/package/sqids)
-[![Downloads](https://img.shields.io/npm/dm/sqids)](https://www.npmjs.com/package/sqids)
-
-[Sqids](https://sqids.org/javascript) (*pronounced "squids"*) is a small library that lets you **generate unique IDs from numbers**. It's good for link shortening, fast & URL-safe ID generation and decoding back into numbers for quicker database lookups.
+[Sqids](https://sqids.org/coldfusion) (*pronounced "squids"*) is a small library that lets you **generate unique IDs from numbers**. It's good for link shortening, fast & URL-safe ID generation and decoding back into numbers for quicker database lookups.
 
 Features:
 
@@ -29,6 +26,13 @@ Not good for:
 - User IDs (can be decoded revealing user count)
 
 ## 🚀 Getting started
+
+Tested with:
+ * Adobe Coldfusion 2018
+ * Adobe Coldfusion 2021
+ * Adobe Coldfusion 2023
+ * Lucee 5
+ * Lucee 6
 
 Clone the repository and copy the Sqids folder to your project. Then in the application.cfc add a mapping
 ```java
