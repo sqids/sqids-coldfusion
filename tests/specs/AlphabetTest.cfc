@@ -90,19 +90,25 @@ component extends="testbox.system.BaseSpec" {
 			it( "multibyte characters", function() {
 				var sqidsOptions = new Sqids.SqidsOptions(alphabet="ë1092");
 
-				expect(function() { var sqids = new Sqids.SqidsEncoder(sqidsOptions); }).toThrow();
+				expect(function() {
+					var sqids = new Sqids.SqidsEncoder(sqidsOptions);
+				}).toThrow(type="custom", regex="Alphabet cannot contain multibyte characters");
 			} );
 
 			it( "repeating alphabet characters", function() {
 				var sqidsOptions = new Sqids.SqidsOptions(alphabet="aabcdefg");
 
-				expect(function() { var sqids = new Sqids.SqidsEncoder(sqidsOptions); }).toThrow();
+				expect(function() {
+					var sqids = new Sqids.SqidsEncoder(sqidsOptions);
+				}).toThrow(type="custom", regex="Alphabet must contain unique characters");
 			} );
 
 			it( "too short of an alphabet", function() {
 				var sqidsOptions = new Sqids.SqidsOptions(alphabet="ab");
 
-				expect(function() { var sqids = new Sqids.SqidsEncoder(sqidsOptions); }).toThrow();
+				expect(function() {
+					var sqids = new Sqids.SqidsEncoder(sqidsOptions);
+				}).toThrow(type="custom", regex="Alphabet length must be at least 3");
 			} );
 		} );
 	}

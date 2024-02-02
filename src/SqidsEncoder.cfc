@@ -1,7 +1,6 @@
 component namespace="Sqids"
 {
     public SqidsEncoder function init(SqidsOptions options) {
-        variables.MaxMinLength = 255;
         variables.MinAlphabetLength = 3;
         variables.MaxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
 
@@ -10,23 +9,19 @@ component namespace="Sqids"
         var minLength = arguments.options.getMinLength();
         var blocklist = arguments.options.getBlocklist();
 
-        // alphabet cannot contain multibyte characters
+		// alphabet cannot contain multibyte characters
 		if (len(charsetDecode(alphabet, "UTF-8")) != len(alphabet)) {
-			throw(type="custom", message="Alphabet cannot contain multibyte characters");
+			throw(type = "custom", message = "Alphabet cannot contain multibyte characters");
 		}
 
 		// check the length of the alphabet
 		if (alphabet.len() < MinAlphabetLength) {
-			throw(type="custom", message="Alphabet length must be at least 3");
+			throw(type = "custom", message = "Alphabet length must be at least 3");
 		}
 
 		// check that the alphabet has only unique characters
-		if (len(ListRemoveDuplicates(alphabet, "")) != alphabet.len()) {
-			throw(type="custom", message="Alphabet must contain unique characters");
-		}
-
-        if (minLength < 0 || minLength > variables.MaxMinLength) {
-			throw(type="custom", message = "The minimum length must be between 0 and #variables.MaxMinLength#.");
+		if (len(removeDuplicates(alphabet)) != alphabet.len()) {
+			throw(type = "custom", message = "Alphabet must contain unique characters");
 		}
 
 		// clean up blocklist:
@@ -91,7 +86,7 @@ component namespace="Sqids"
 			throw(type="custom", message="Encoding supports numbers between 0 and #variables.MaxNumber#");
 		}
 
-		return this.encodeNumbers(numbers);
+		return encodeNumbers(numbers);
 	}
 
 	/**
@@ -113,7 +108,7 @@ component namespace="Sqids"
 		var offset = numbers.reduce(
 			function (required numeric result, required numeric item, required numeric index)
 			{
-				return asc(variables.alphabet[arguments.item mod Len(variables.alphabet) + 1]) + arguments.index - 1 + arguments.result;
+				return asc(variables.alphabet[arguments.item mod variables.alphabet.len() + 1]) + arguments.index - 1 + arguments.result;
 			}, numbers.len()
 		) mod variables.alphabet.len() + 1;
 
@@ -121,14 +116,17 @@ component namespace="Sqids"
 		offset = (offset + arguments.increment) mod variables.alphabet.len();
 
 		// re-arrange alphabet so that second-half goes in front of the first-half
-		var alphabet = variables.alphabet.mid(offset);
-		alphabet.append(variables.alphabet.mid(1, offset - 1), true);
+		var alphabet = variables.alphabet;
+		if (offset > 1) {
+			alphabet = variables.alphabet.slice(offset);
+			alphabet.append(variables.alphabet.slice(1, offset - 1), true);
+		}
 
 		// `prefix` is the first character in the generated ID, used for randomization
 		var prefix = alphabet[1];
 
 		// reverse alphabet (otherwise for [0, x] `offset` and `separator` will be the same char)
-		alphabet = alphabet.reverse();
+		alphabet = listToArray(reverse(arrayToList(alphabet, "")), "");
 
 		// final ID will always have the `prefix` character at the beginning
 		var ret = [prefix];
@@ -138,13 +136,13 @@ component namespace="Sqids"
 			var num = numbers[i];
 
 			// the first character of the alphabet is going to be reserved for the `separator`
-			var alphabetWithoutSeparator = alphabet.mid(2);
+			var alphabetWithoutSeparator = alphabet.slice(2);
 			ret.append(toId(num, alphabetWithoutSeparator), true);
 
 			// if not the last number
 			if (i < numbers.len()) {
 				// `separator` character is used to isolate numbers within the ID
-				ret.append(alphabet.mid(1, 1), true);
+				ret.append(alphabet[1]);
 
 				// shuffle on every iteration
 				alphabet = shuffle(alphabet);
@@ -154,13 +152,13 @@ component namespace="Sqids"
 		// handle `minLength` requirement, if the ID is too short
 		if (variables.minLength > ret.len()) {
 			// append a separator
-			ret.append(alphabet.mid(1, 1), true);
+			ret.append(alphabet[1]);
 
 			// keep appending `separator` + however much alphabet is needed
 			// for decoding: two separators next to each other is what tells us the rest are junk characters
 			while (variables.minLength - ret.len() > 0) {
 				alphabet = shuffle(alphabet);
-				ret.append(alphabet.mid(1, min(variables.minLength - ret.len(), alphabet.len())), true);
+				ret.append(alphabet.slice(1, min(variables.minLength - ret.len(), alphabet.len())), true);
 			}
 		}
 
@@ -212,11 +210,14 @@ component namespace="Sqids"
 		var offset = variables.alphabet.find(prefix);
 
 		// re-arrange alphabet back into it's original form
-		var alphabet = variables.alphabet.mid(offset);
-		alphabet.append(variables.alphabet.mid(1, offset - 1), true);
+		var alphabet = variables.alphabet;
+		if (offset > 1) {
+			alphabet = variables.alphabet.slice(offset);
+			alphabet.append(variables.alphabet.slice(1, offset - 1), true);
+		}
 
 		// reverse alphabet
-		alphabet = alphabet.reverse();
+		alphabet = listToArray(reverse(arrayToList(alphabet, "")), "");
 
 		// now it's safe to remove the prefix character from ID, it's not needed anymore
 		id = id.right(id.len() - 1);
@@ -232,17 +233,20 @@ component namespace="Sqids"
 			}
 
 			// decode the number without using the `separator` character
-			var alphabetWithoutSeparator = alphabet.mid(2);
+			var alphabetWithoutSeparator = alphabet.slice(2);
 			ret.append(toNumber(chunks[1], alphabetWithoutSeparator), true);
 
 			// if this ID has multiple numbers, shuffle the alphabet because that's what encoding function did
 			if (chunks.len() > 1) {
-				alphabet = this.shuffle(alphabet);
+				alphabet = shuffle(alphabet);
 			}
 
 			// `id` is now going to be everything to the right of the `separator`
-			id = arrayToList(chunks.mid(2), separator);
-
+			if (chunks.len() > 1) {
+				id = arrayToList(chunks.slice(2), separator);
+			} else {
+				id = "";
+			}
 		}
 
 		return ret;
@@ -315,5 +319,25 @@ component namespace="Sqids"
 		}
 
 		return false;
+	}
+
+	/* Helper functions */
+	private string function removeDuplicates(required string value) {
+		if (isLucee()) {
+			return ListRemoveDuplicates(value, "");
+		}
+
+		var returnValue = "";
+		for (var i = 1; i <= value.len(); i++) {
+			if (find(value[i], returnValue) == 0) {
+				returnValue &= value[i];
+			}
+		}
+
+		return returnValue;
+	}
+
+	private function isLucee(){
+		return ( structKeyExists( server, "lucee" ) );
 	}
 }

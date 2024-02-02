@@ -2,20 +2,20 @@ component extends="testbox.system.BaseSpec" {
 
 	/*********************************** LIFE CYCLE Methods ***********************************/
 
-	function beforeAll(){
+	function beforeAll() {
 		// setup the entire test bundle here
         var sqidsOptions = new Sqids.SqidsOptions();
         variables.defaultAlphabetLength = sqidsOptions.getAlphabet().len();
         variables.maxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
     }
 
-	function afterAll(){
+	function afterAll() {
 		// do cleanup here
 	}
 
 	/*********************************** BDD SUITES ***********************************/
 
-	function run(){
+	function run() {
 		/**
 		 * describe() starts a suite group of spec tests. It is the main BDD construct.
 		 * You can also use the aliases: story(), feature(), scenario(), given(), when()
@@ -76,25 +76,27 @@ component extends="testbox.system.BaseSpec" {
                 var numbers = [1, 2, 3];
 
                 var map = [
-                    6: "86Rf07",
-                    7: "86Rf07x",
-                    8: "86Rf07xd",
-                    9: "86Rf07xd4",
-                    10: "86Rf07xd4z",
-                    11: "86Rf07xd4zB",
-                    12: "86Rf07xd4zBm",
-                    13: "86Rf07xd4zBmi",
-                    variables.defaultAlphabetLength + 0:
+                    "6": "86Rf07",
+                    "7": "86Rf07x",
+                    "8": "86Rf07xd",
+                    "9": "86Rf07xd4",
+                    "10": "86Rf07xd4z",
+                    "11": "86Rf07xd4zB",
+                    "12": "86Rf07xd4zBm",
+                    "13": "86Rf07xd4zBmi",
+                    "#variables.defaultAlphabetLength + 0#":
                         "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTM",
-                    variables.defaultAlphabetLength + 1:
+                    "#variables.defaultAlphabetLength + 1#":
                         "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMy",
-                    variables.defaultAlphabetLength + 2:
+                    "#variables.defaultAlphabetLength + 2#":
                         "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf",
-                    variables.defaultAlphabetLength + 3:
-                        "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf1"
+                    "#variables.defaultAlphabetLength + 3#":
+                        "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf1",
+                    "256":
+                        "86Rf07xd4zBmiJXQG6otHEbew02c3PWsUOLZxADhCpKj7aVFv9I8RquYrNlSTMyf15kngGjqB9KxuSsQ1tvrCU6LOgdeEoXAInmPHfaJVkWYi2FzyNR7MpDZ4l83wh0Tb5cGgOrESNkXR8I6Uxeqn2pidKJLtZyDQPwWubBAVT5zfo01Mh3sHCY79j4lFvmacL6NH5VZTd3BkWPRO7EnK8IxrQwUoMq2SACJipDu10s4jaYGehFXytgbfzml9vcy"
                 ];
 
-                map.each(function (required numeric minLength, required string id) {
+                map.each(function(required numeric minLength, required string id) {
                     var sqidsOptions = new Sqids.SqidsOptions(minLength = arguments.minLength);
                     var sqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
 
@@ -122,7 +124,7 @@ component extends="testbox.system.BaseSpec" {
                     "moxr3HqLAK0GsTND6jowfZz3SUx7cQ8aC54Pl1RbIvFXmEJuBMYVeW9yrdOtin": [0, 9]
                 ];
 
-                ids.each(function (required string id, required array numbers) {
+                ids.each(function(required string id, required array numbers) {
                     expect(sqidsEncoder.encode(arguments.numbers)).toBe(arguments.id);
                     expect(sqidsEncoder.decode(arguments.id)).toBe(arguments.numbers);
                 });
