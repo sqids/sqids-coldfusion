@@ -6,7 +6,7 @@ component extends="testbox.system.BaseSpec" {
 		// setup the entire test bundle here
 		var sqidsOptions = new Sqids.SqidsOptions();
 		variables.SqidsEncoder = new Sqids.SqidsEncoder(sqidsOptions);
-		variables.MaxNumber = createObject("java", "java.lang.Long").MAX_VALUE;
+		variables.MaxNumber = createObject("java", "java.lang.Integer").MAX_VALUE;
 	}
 
 	function afterAll(){
@@ -169,9 +169,6 @@ component extends="testbox.system.BaseSpec" {
 			} );
 
 			it( "encode out-of-range numbers", function() {
-				var sqidsOptions = new Sqids.SqidsOptions();
-				var sqids = new Sqids.SqidsEncoder(sqidsOptions);
-
 				expect(function() { variables.SqidsEncoder.encode([-1]); }).toThrow();
 				expect(function() { variables.SqidsEncoder.encode(variables.MaxNumber + 1); }).toThrow();
 			} );
