@@ -13,13 +13,17 @@ jobs:
     name: Test on ${{ matrix.cfml_engine }}
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        cfml_engine: [lucee@5, lucee@6, adobe@2018, adobe@2021, adobe@2023 ]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run TestBox
         uses: coldfumonkeh/cfml-testbox-action@v1
         with:
-          cfml-engine: 'lucee@5'
+          cfml-engine: ${{ matrix.cfml_engine }}
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: always()
