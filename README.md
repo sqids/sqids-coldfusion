@@ -1,4 +1,6 @@
-# [Sqids Coldfusion](https://sqids.org/coldfusion)
+# [Sqids ColdFusion](https://sqids.org/coldfusion)
+
+[![Tests](https://github.com/sqids/sqids-coldfusion/actions/workflows/TestBox.yml/badge.svg)](https://github.com/sqids/sqids-coldfusion/actions/workflows/TestBox.yml)
 
 [Sqids](https://sqids.org/coldfusion) (*pronounced "squids"*) is a small library that lets you **generate unique IDs from numbers**. It's good for link shortening, fast & URL-safe ID generation and decoding back into numbers for quicker database lookups.
 
@@ -28,9 +30,9 @@ Not good for:
 ## 🚀 Getting started
 
 Tested with:
- * Adobe Coldfusion 2018
- * Adobe Coldfusion 2021
- * Adobe Coldfusion 2023
+ * Adobe ColdFusion 2018
+ * Adobe ColdFusion 2021
+ * Adobe ColdFusion 2023
  * Lucee 5
  * Lucee 6
 
