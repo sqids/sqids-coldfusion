@@ -30,6 +30,7 @@ Not good for:
 ## 🚀 Getting started
 
 Tested with:
+ * Adobe ColdFusion 2016
  * Adobe ColdFusion 2018
  * Adobe ColdFusion 2021
  * Adobe ColdFusion 2023
@@ -46,7 +47,7 @@ this.mappings[ "/Sqids" ] = expandPath( "/src/Sqids" );
 Simple encode & decode:
 
 ```java
-var sqids = new Sqids.SquidsEncoder();
+var sqids = new Sqids.SqidsEncoder();
 var id = sqids.encode([1, 2, 3]); // "86Rf07"
 var numbers = sqids.decode(id); // [1, 2, 3]
 ```

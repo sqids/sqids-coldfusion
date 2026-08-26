@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        cfml_engine: [lucee@5, lucee@6, adobe@2018, adobe@2021, adobe@2023 ]
+        cfml_engine: [lucee@5, lucee@6, adobe@2016, adobe@2018, adobe@2021, adobe@2023 ]
 
     steps:
       - name: Checkout

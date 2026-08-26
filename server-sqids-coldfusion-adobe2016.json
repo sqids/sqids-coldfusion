@@ -1,0 +1,12 @@
+{
+    "app":{
+        "cfengine":"adobe@2016"
+    },
+    "name":"sqids-coldfusion-adobe2016",
+    "openBrowser":"false",
+    "web":{
+        "HTTP":{
+            "port":"60849"
+        }
+    }
+}
