@@ -30,6 +30,7 @@ Not good for:
 ## 🚀 Getting started
 
 Tested with:
+ * Adobe ColdFusion 2016
  * Adobe ColdFusion 2018
  * Adobe ColdFusion 2021
  * Adobe ColdFusion 2023
@@ -46,7 +47,7 @@ this.mappings[ "/Sqids" ] = expandPath( "/src/Sqids" );
 Simple encode & decode:
 
 ```java
-var sqids = new Sqids.SquidsEncoder();
+var sqids = new Sqids.SqidsEncoder();
 var id = sqids.encode([1, 2, 3]); // "86Rf07"
 var numbers = sqids.decode(id); // [1, 2, 3]
 ```
@@ -57,7 +58,7 @@ var numbers = sqids.decode(id); // [1, 2, 3]
 Enforce a *minimum* length for IDs:
 
 ```java
-var sqids = new Sqids.SquidsEncoder(new Sqids.SqidsOptions(minLength = 10));
+var sqids = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(minLength = 10));
 var id = sqids.encode([1, 2, 3]); // "86Rf07xd4z"
 var numbers = sqids.decode(id); // [1, 2, 3]
 ```
@@ -65,7 +66,7 @@ var numbers = sqids.decode(id); // [1, 2, 3]
 Randomize IDs by providing a custom alphabet:
 
 ```java
-var sqids = new Sqids.SquidsEncoder(new Sqids.SqidsOptions(alphabet = "FxnXM1kBN6cuhsAvjW3Co7l2RePyY8DwaU04Tzt9fHQrqSVKdpimLGIJOgb5ZE"));
+var sqids = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(alphabet = "FxnXM1kBN6cuhsAvjW3Co7l2RePyY8DwaU04Tzt9fHQrqSVKdpimLGIJOgb5ZE"));
 var id = sqids.encode([1, 2, 3]); // "B4aajs"
 var numbers = sqids.decode(id); // [1, 2, 3]
 ```
@@ -73,7 +74,7 @@ var numbers = sqids.decode(id); // [1, 2, 3]
 Prevent specific words from appearing anywhere in the auto-generated IDs:
 
 ```java
-var sqids = new Sqids.SquidsEncoder(new Sqids.SqidsOptions(blocklist = ["86Rf07"]));
+var sqids = new Sqids.SqidsEncoder(new Sqids.SqidsOptions(blocklist = ["86Rf07"]));
 var id = sqids.encode([1, 2, 3]); // "se8ojk"
 var numbers = sqids.decode(id); // [1, 2, 3]
 ```

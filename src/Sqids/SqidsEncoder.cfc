@@ -41,12 +41,8 @@ component namespace="Sqids"
 				var intersection = wordChars.filter(
 					function (required string wordChar)
 					{
-						var _wordChar = arguments.wordChar;
-						return alphabetChars.some(
-							function (required string alphabetChar)
-							{
-								return arguments.alphabetChar == _wordChar;
-							});
+						// arrayFind instead of arraySome: arraySome does not exist on ColdFusion 2016
+						return arrayFind(alphabetChars, arguments.wordChar) > 0;
 					});
 				if (intersection.len() == wordChars.len()) {
 					filteredBlocklist.append(wordLowercased);
@@ -198,17 +194,14 @@ component namespace="Sqids"
 		// if a character is not in the alphabet, return an empty array
 		var alphabetChars = variables.alphabet;
 		for (var idChar in listToArray(id, "")) {
-			if (!alphabetChars.some(
-					function (required string alphabetChar)
-					{
-						return arguments.alphabetChar == idChar;
-					})) {
+			// arrayFind instead of arraySome: arraySome does not exist on ColdFusion 2016
+			if (arrayFind(alphabetChars, idChar) == 0) {
 				return ret;
 			}
 		}
 
-		// first character is always the `prefix`
-		var prefix = id[1];
+		// first character is always the `prefix` (left() instead of id[1]: string indexing is not supported on ColdFusion 2016)
+		var prefix = left(id, 1);
 
 		// `offset` is the semi-random position that was generated during encoding
 		var offset = variables.alphabet.find(prefix);
@@ -222,6 +215,11 @@ component namespace="Sqids"
 
 		// reverse alphabet
 		alphabet = listToArray(reverse(arrayToList(alphabet, "")), "");
+
+		// a one-character ID has no numbers after the prefix (right(id, 0) throws on Adobe ColdFusion and Lucee 5)
+		if (id.len() == 1) {
+			return ret;
+		}
 
 		// now it's safe to remove the prefix character from ID, it's not needed anymore
 		id = id.right(id.len() - 1);
@@ -333,8 +331,10 @@ component namespace="Sqids"
 
 		var returnValue = "";
 		for (var i = 1; i <= value.len(); i++) {
-			if (find(value[i], returnValue) == 0) {
-				returnValue &= value[i];
+			// mid() instead of value[i]: string indexing is not supported on ColdFusion 2016
+			var char = mid(value, i, 1);
+			if (find(char, returnValue) == 0) {
+				returnValue &= char;
 			}
 		}
 
